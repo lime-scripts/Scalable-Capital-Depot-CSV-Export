@@ -1,6 +1,6 @@
 # Scalable Capital: Export der Depotbestände als CSV-Datei
 
-Tampermonkey Userscript, das u.a. den Download des aktuellen Depots bei Scalable Capital als CSV-Datei ermöglicht.
+Tampermonkey Userscript, das u.a. den Download des aktuellen Depotbestands bei Scalable Capital als CSV-Datei ermöglicht.
 
 Features:
 - Download des aktuellen Depots als CSV-Datei
