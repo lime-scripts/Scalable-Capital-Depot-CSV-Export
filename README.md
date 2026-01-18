@@ -15,5 +15,6 @@ Features:
 - Bei einer hohen Anzahl an Positionen im Depot kann es zu Problemen beim Export kommen. In diesem Fall könnte die Anlage von Portfolio-Gruppen helfen.
 
 ## Release Notes
-- Version 0.3: Feature "Guthaben kopieren" hinzugefügt.
-- Version 0.2: Der aktuelle Preis wird in der CSV-Datei mit exportiert.
+- Version 0.3.1:  Fix: Feature "Guthaben kopieren".
+- Version 0.3:    Feature "Guthaben kopieren" hinzugefügt.
+- Version 0.2:    Der aktuelle Preis wird in der CSV-Datei mit exportiert.
