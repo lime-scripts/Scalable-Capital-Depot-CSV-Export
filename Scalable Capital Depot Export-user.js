@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Scalable Capital Depot
 // @namespace    http://tampermonkey.net/
-// @version      0.3
+// @version      0.3.1
 // @description  Extend Scalable Capital with additional functionality
 // @author       https://github.com/lime-scripts
 // @match        https://de.scalable.capital/**
@@ -16,12 +16,19 @@
     GM_registerMenuCommand("Export Depot CSV", function () {
         const positions = findPositions();
         const csv = toCsv(positions);
-        downloadCsv(csv, "ScalableNeu_depot_export_" + (new Date().toISOString().split(".")[0]) + ".csv");
+        const prefix = "ScalableNeu";
+        downloadCsv(csv, prefix + "_depot_export_" + (new Date().toISOString().split(".")[0]) + ".csv");
     });
 
 
     GM_registerMenuCommand("Guthaben kopieren", function () {
-        const deposit = getDeposit();
+        let deposit;
+        try {
+            deposit = getDeposit();
+        }
+        catch (err) {
+            console.error("UserScript Error", err);
+        }
         if (deposit === undefined) {
             alert("Fehler: Guthaben konnte nicht kopiert werden");
             return;
@@ -80,51 +87,10 @@
     }
 
 
-    function findPropsLeafNodes(el) {
-        if (!el) {
-            return [];
-        }
-        const props = el[Object.keys(el).find(key => key.startsWith("__reactProps"))];
-        if (!props) {
-            return [];
-        }
-
-        const resultNodes = [];
-
-        function visit(node) {
-            if (!node) {
-                return;
-            }
-            else if (Array.isArray(node)) {
-                for (const subNode of node) {
-                    visit(subNode);
-                }
-            }
-            else if (isObject(node)) {
-                if ((!node.children || Array.isArray(node.children) && node.children.length === 0) && !node.props) {
-                    resultNodes.push(node);
-                }
-                else {
-                    for (const key of Object.keys(node)) {
-                        if (["children", "props"].includes(key)) {
-                            visit(node[key]);
-                        }
-                    }
-                }
-            }
-        }
-
-        visit(props);
-        return resultNodes;
-
-    }
-
     function getDeposit() {
-        const nodes = findPropsLeafNodes(
-            Array.from(document.querySelectorAll("button"))
-                .filter(el => el.className.includes("cashBreakdownButton"))[0]
-        );
-        return nodes.filter(n => n.value !== undefined)[0]?.value;
+        return Object.entries(
+            Array.from(document.querySelectorAll("span")).filter(el => el.classList && Array.from(el.classList).some(cl => cl.includes("-cashBalance")))[0] ?? {}
+        ).find(e => e[0].startsWith("__reactProps"))?.[1]?.children.props.value;
     }
 
 
